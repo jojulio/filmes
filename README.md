@@ -1,4 +1,4 @@
-# filmes
+# Filmes
 
 ## Project setup
 ```
