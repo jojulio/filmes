@@ -11,10 +11,10 @@
 	<div class="collapse navbar-collapse" id="navbarSupportedContent">
 		<ul class="navbar-nav mr-auto">
 			<li class="nav-item">
-				<router-link class="nav-link" to="/">Home</router-link>
+				<router-link class="nav-link" :to="{ name: 'home' }">Home</router-link>
 			</li>
 			<li class="nav-item">
-				<router-link class="nav-link" to="/movies/new">Filmes</router-link>
+				<router-link class="nav-link" :to="{ name: 'newMovie' }">Filmes</router-link>
 			</li>
 		</ul>
 		<div class="form-inline my-2 my-lg-0">
@@ -31,4 +31,11 @@
 </script>
 
 <style scoped>
+nav a.nav-link {
+    font-weight: bold;
+}
+
+nav a.router-link-exact-active {
+	color: #fff !important;
+}
 </style>
