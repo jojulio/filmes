@@ -1,6 +1,6 @@
 <template>
   <div>
-    <p>Cadastro de filmes</p>
+    <p>Pagina inicial</p>
   </div>
 </template>
 
