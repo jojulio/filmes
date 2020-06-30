@@ -14,4 +14,13 @@ export default class TmdbApiService {
 				throw new Error('Não foi possível carregar dados do IMDB');
 			});
 	}
+
+	getFullInfoByTmdbId(id) {
+		return this._resource.$http.get(`${this.link}/movie/${id}?api_key=${this.key}&language=pt-BR`)
+		.then(res => res.json())
+			.then (null, err => {
+				console.log(err);
+				throw new Error('Não foi possível carregar');
+			});
+	}
 }
