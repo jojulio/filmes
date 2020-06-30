@@ -1,5 +1,6 @@
 <template>
   <my-card margin="mt-4 ml-1 mr-1" :col="12">
+
     <h5 class="card-title">Cadastro de filmes</h5>
     
     <form>
@@ -9,44 +10,44 @@
 
             <div class="form-group col-md-2">
               <label for="imdb_id">ID IMDB</label>
-              <input type="text" class="form-control" name="imdb_id" v-model="imdb" v-on:change="loadValuesFromTMDB">
+              <input type="text" class="form-control" v-model="imdb" >
             </div>
 
             <div class="form-group col-md-5">
               <label for="title">Título</label>
-              <input type="text" class="form-control" name="title">
+              <input type="text" class="form-control" v-model="title">
             </div>
 
             <div class="form-group col-md-5">
               <label for="title">Título original</label>
-              <input type="text" class="form-control" name="original_title">
+              <input type="text" class="form-control" v-model="original_title"> 
             </div>
 
             <div class="form-group col-md-4">
               <label for="original_language">Linguagem</label>
-              <input type="text" class="form-control" name="original_language">
+              <input type="text" class="form-control" v-model="original_language">
             </div>
 
             <div class="form-group col-md-4">
               <label for="release_date">Data de estreia</label>
-              <input type="date" class="form-control" name="release_date">
+              <input type="date" class="form-control" v-model="release_date">
             </div>
 
             <div class="form-group col-md-4">
               <label for="duration">Duração</label>
-              <input type="number" class="form-control" name="duration">
+              <input type="number" class="form-control">
             </div>
 
             <div class="form-group col-md-12">
               <label for="overview">Sinopse</label>
-              <textarea class="form-control" name="overview" rows="8"></textarea>
+              <textarea class="form-control" rows="8" v-model="overview"></textarea>
             </div>
           </div>
         </div>
         <div class="col-3">
             <div class="form-group col-md-12">
               <label for="poster_path">Poster</label>
-              <input type="text" class="form-control" name="poster_path" v-model="poster">
+              <input type="text" class="form-control" v-model="poster">
             </div>
             <div class="form-group col-md-12 img-poster">
               <img :src="poster">
@@ -54,7 +55,6 @@
         </div>
       </div>
       
-     
       <button type="submit" class="btn btn-primary">Salvar</button>
     </form>
   </my-card>
@@ -63,6 +63,7 @@
 <script>
 
 import Card from '../../components/shared/Card';
+import TmdbApiService from '../../domain/TmdbApiService';
 
 export default {
   components: {
@@ -70,24 +71,54 @@ export default {
   },
   data() {
     return {
-      poster : '',
-      imdb: ''
+      imdb : '', 
+      title: '', 
+      original_title: '', 
+      original_language: '',
+      release_date: '',
+      overview: '',
+      poster: '',
+      isLoading: false,
+      fullPage: true
+      
     }
   },
 	methods: {
-		loadValuesFromTMDB() {
-      console.log(this.imdb);
-
-      this.$http.get('https://api.themoviedb.org/3/find/tt7286456?api_key=99036d33394962b8dcb1c61dde34edf3&language=pt-BR&external_source=imdb_id')
-      .then(response => {
-        console.log(response)
-      }, err => {
-				console.log(err);
-				throw new Error('Não foi possível obter as fotos');
+		loadValuesFromTmdb() {
+      this.service = new TmdbApiService(this);
+      this.service
+        .getFilmByImdbCode(this.imdb)
+        .then(res => {
+          if (res.movie_results.length > 0) {
+            const movie = res.movie_results[0];
+            
+            this.title = movie.title;
+            this.original_title = movie.original_title;
+            this.original_language = movie.original_language
+            this.release_date = movie.release_date
+            this.overview = movie.overview
+            this.poster = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2/'+movie.poster_path;
+          } else {
+            console.log('não encontrado')
+          }
+        }); 
+		}
+  },
+  watch: {
+    imdb: function () {
+      const self = this;
+      let loader = this.$loading.show({
+        container: this.fullPage ? null : this.$refs.formContainer,
+        canCancel: true,
+        onCancel: this.onCancel,
       });
 
-		}
-	}
+      setTimeout(function () { 
+        self.loadValuesFromTmdb();
+        loader.hide();
+      }, 1000);
+    }
+  }
 }
 </script>
 
