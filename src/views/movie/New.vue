@@ -3,7 +3,7 @@
     <notifications position="bottom left" />
     <h5 class="card-title">Cadastro de filmes</h5>
     
-    <form ref="formContainer">
+    <form ref="formContainer" @submit.prevent="save()">
       <div class="row">
         <div class="col-9">
           <div class="form-row">
@@ -117,7 +117,7 @@ export default {
             this.model.original_language = movie.original_language;
             this.model.release_date = movie.release_date;
             this.model.overview = movie.overview;
-            this.model.poster = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2/'+movie.poster_path;
+            this.model.poster = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+movie.poster_path;
             
             this.getFullInfoFromTmdb();
           } else {
@@ -160,6 +160,9 @@ export default {
 
         this.model.genres = newGenres;
       }
+    },
+    save() {
+      console.log(this.model)
     }
   },
 }
