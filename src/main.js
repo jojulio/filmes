@@ -5,11 +5,13 @@ import { BootstrapVue } from 'bootstrap-vue';
 import VueResource from 'vue-resource';
 import Loading from 'vue-loading-overlay';
 import 'vue-loading-overlay/dist/vue-loading.css';
+import Notifications from 'vue-notification';
 
 Vue.config.productionTip = false;
 Vue.use(BootstrapVue);
 Vue.use(VueResource);
 Vue.use(Loading);
+Vue.use(Notifications);
 
 new Vue({
   router,
