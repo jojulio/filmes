@@ -10,7 +10,7 @@
 
             <div class="form-group col-md-2">
               <label for="imdb_id">ID IMDB</label>
-              <input type="text" class="form-control" v-on:change="loadValuesFromTmdb" v-model="model.imdb" >
+              <input type="text" class="form-control" v-on:change="loadValuesFromTmdb" v-model="model.imdb_id" >
             </div>
 
             <div class="form-group col-md-5">
@@ -52,10 +52,10 @@
         <div class="col-3">
             <div class="form-group col-md-12">
               <label for="poster_path">Poster</label>
-              <input type="text" class="form-control" v-model="model.poster">
+              <input type="text" class="form-control" v-model="model.poster_path">
             </div>
             <div class="form-group col-md-12 img-poster">
-              <img :src="model.poster">
+              <img :src="model.poster_path">
             </div>
         </div>
       </div>
@@ -68,6 +68,7 @@
 
 import Card from '../../components/shared/Card';
 import TmdbApiService from '../../domain/TmdbApiService';
+import FilmesApiService from '../../domain/FilmesApiService';
 import Multiselect from 'vue-multiselect';
 
 export default {
@@ -79,13 +80,13 @@ export default {
     return {
       model: {
         tmdb_id: '',
-        imdb : '', 
+        imdb_id : '', 
         title: '', 
         original_title: '', 
         original_language: '',
         release_date: '',
         overview: '',
-        poster: '',
+        poster_path: '',
         runtime: '',
         genres: []
       },
@@ -104,9 +105,9 @@ export default {
         opacity: 1,
       });
 
-      this.service = new TmdbApiService(this);
-      await this.service
-        .getFilmByImdbCode(this.model.imdb)
+      this.serviceTmdb = new TmdbApiService(this);
+      await this.serviceTmdb
+        .getFilmByImdbCode(this.model.imdb_id)
         .then(res => {
           if (res.movie_results.length > 0) {
             const movie = res.movie_results[0];
@@ -117,20 +118,22 @@ export default {
             this.model.original_language = movie.original_language;
             this.model.release_date = movie.release_date;
             this.model.overview = movie.overview;
-            this.model.poster = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+movie.poster_path;
+            this.model.poster_path = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+movie.poster_path;
             
             this.getFullInfoFromTmdb();
           } else {
             for (let prop in this.model) {
-              if (prop !== 'imdb') {
+              if (prop !== 'imdb_id') {
                 this.model[prop] = '';
               }
             }
+
             this.$notify({
               type: 'warn',
               title: 'Informação',
               text: 'Não encontrado na base de dados do IMDB'
             });
+            
             this.loader.hide();
           }
         })
@@ -140,7 +143,7 @@ export default {
         
     },    
     async getFullInfoFromTmdb() {
-      await this.service
+      await this.serviceTmdb
         .getFullInfoByTmdbId(this.model.tmdb_id)
         .then(res => {
             this.model.runtime = res.runtime;
@@ -150,21 +153,46 @@ export default {
 
         this.loader.hide();
     },
+    getGenres() {
+      this.serviceFilmes = new FilmesApiService(this);
+
+      this.serviceFilmes
+        .getGenres()
+        .then(res => {
+          if (res.status) {
+            this.options = res.genres;
+          }
+        });
+    },
     prepareGenres() {
       if (this.genresTmdb) {
         let newGenres = [];
         for (let i = 0; i < this.genresTmdb.length; i++) {
-          let genre = {'id' : this.genresTmdb[i].name, 'name' : this.genresTmdb[i].name };
+          const option = this.options.find(x => x.name === this.genresTmdb[i].name)
+          let genre = {'id' : option.id, 'name' : this.genresTmdb[i].name };
           newGenres.push(genre);
         }
-
         this.model.genres = newGenres;
       }
     },
     save() {
       console.log(this.model)
+      this.serviceFilmes
+        .saveMovie(this.model)
+        .then(res => {
+          console.log(res)
+        }, () => {
+            this.$notify({
+              type: 'warn',
+              title: 'Informação',
+              text: 'Não foi possível salvar'
+            });
+        });
     }
   },
+  created: function(){
+      this.getGenres();
+  }
 }
 </script>
 
