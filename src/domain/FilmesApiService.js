@@ -11,7 +11,7 @@ export default class FilmesApiService {
 			.then(res => res.json())
 			.then (null, err => {
 				console.log(err);
-				throw new Error('Não foi possível carregar dados de FILMES');
+				throw new Error('Não foi possível carregar');
 			});
 	}
 
@@ -23,9 +23,18 @@ export default class FilmesApiService {
 			}, 
 			err => {
 				console.log(err);
-				throw new Error('Não foi possível carregar dados de FILMES');
+				throw new Error('Não foi possível carregar');
 			}
 			
 		)
+	}
+
+	getMovies() {
+		return this._resource.$http.get(`${this.link}/get/movies?apiKey=${this.key}`)
+			.then(res => res.json())
+			.then (null, err => {
+				console.log(err);
+				throw new Error('Não foi possível carregar');
+			});
 	}
 }

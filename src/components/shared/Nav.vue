@@ -14,7 +14,7 @@
 				<router-link class="nav-link" :to="{ name: 'home' }">Home</router-link>
 			</li>
 			<li class="nav-item">
-				<router-link class="nav-link" :to="{ name: 'newMovie' }">Filmes</router-link>
+				<router-link class="nav-link" :to="{ name: 'listMovie' }">Filmes</router-link>
 			</li>
 		</ul>
 		<div class="form-inline my-2 my-lg-0">

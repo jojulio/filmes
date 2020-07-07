@@ -1,6 +1,5 @@
 <template>
   <my-card margin="mt-4 ml-1 mr-1" :col="12">
-    <notifications position="bottom left" />
     <h5 class="card-title">Cadastro de filmes</h5>
     
     <form ref="formContainer" @submit.prevent="save()">

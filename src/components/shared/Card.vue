@@ -1,10 +1,9 @@
 <template>
-	<div class="row" :class="margin">
-		<div :class="formatCol">
-			<div class="card">
-				<div class="card-body">
-					<slot></slot>
-				</div>
+	<div :class="formatCol">
+		<div class="card">
+			<img v-if="img" class="card-img-top" :src="img" alt="Card image cap">
+			<div class="card-body">
+				<slot></slot>
 			</div>
 		</div>
 	</div>
@@ -15,6 +14,7 @@ export default {
 	props: {
 		margin: String,
 		col: Number,
+		img: String
 	},
 	computed: {
 		formatCol: function () {
@@ -24,5 +24,8 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
+	img {
+		width: 100%;
+	}
 </style>
