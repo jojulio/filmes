@@ -52,8 +52,7 @@ export default {
 			return genresFormatted;
 		},
 		openMovie(id) {
-			console.log(id)
-			//this.$router.push('/movies/' + id);
+			this.$router.push('/movies/' + id);
 		}
 	},
 }
@@ -71,14 +70,14 @@ export default {
 .overview {
     height: 96px;
 }
-
 .movie {
+	cursor: pointer;
+}
+
+.movie img {
     transition: all .5s;
 }
 
-.movie:hover .card-body{
-	background: #f1f1f1;
-}
 .movie:hover img{
     opacity: 0.2;
 }

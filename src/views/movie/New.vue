@@ -175,7 +175,6 @@ export default {
       }
     },
     save() {
-      console.log(this.model)
       this.serviceFilmes
         .saveMovie(this.model)
         .then(res => {
