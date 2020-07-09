@@ -24,11 +24,11 @@ export default {
 	data() {
 		return {
 			movies: [],
-			utilsService: new UtilsService()
+			utilsService: new UtilsService(),
+			serviceFilmes: new FilmesApiService(this)
 		}
 	},
 	created() {
-		this.serviceFilmes = new FilmesApiService(this);
 		this.serviceFilmes
 			.getMovies()
 			.then(res => {
