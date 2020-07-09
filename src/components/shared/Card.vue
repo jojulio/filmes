@@ -28,4 +28,16 @@ export default {
 	img {
 		width: 100%;
 	}
+
+	.movie {
+		cursor: pointer;
+	}
+
+	.movie img {
+		transition: all .5s;
+	}
+
+	.movie:hover img{
+		opacity: 0.2;
+	}
 </style>

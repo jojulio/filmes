@@ -15,6 +15,7 @@
 <script>
 import Card from '../../components/shared/Card';
 import FilmesApiService from '../../domain/FilmesApiService';
+import UtilsService from '../../domain/UtilsService';
 
 export default {
 	components: {
@@ -23,6 +24,7 @@ export default {
 	data() {
 		return {
 			movies: [],
+			utilsService: new UtilsService()
 		}
 	},
 	created() {
@@ -38,18 +40,10 @@ export default {
 			return (overview.length > 100) ? overview.substring(0, 100) + ' ...' : overview;
 		},
 		getYearRelease(date) {
-			let d = date.split('-');
-
-			return ` (${d[0]})`;
+			return this.utilsService.getYearRelease(date);
 		},
 		formatGenres(genres) {
-			let genresFormatted = '';
-
-			for (let i = 0; i < genres.length; i++) {
-				genresFormatted = (genresFormatted ? genresFormatted + ' | ' : '') + genres[i].name;
-			}
-
-			return genresFormatted;
+			return this.utilsService.formatGenres(genres);
 		},
 		openMovie(id) {
 			this.$router.push('/movies/' + id);
@@ -58,7 +52,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .title {
     height: 48px;
 }
@@ -70,15 +64,5 @@ export default {
 .overview {
     height: 96px;
 }
-.movie {
-	cursor: pointer;
-}
 
-.movie img {
-    transition: all .5s;
-}
-
-.movie:hover img{
-    opacity: 0.2;
-}
 </style>
