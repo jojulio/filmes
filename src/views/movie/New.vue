@@ -77,6 +77,8 @@ export default {
   },
   data() {
     return {
+      id: this.$route.params.id,
+      serviceFilmes: new FilmesApiService(this),
       model: {
         tmdb_id: '',
         imdb_id : '', 
@@ -153,8 +155,6 @@ export default {
         this.loader.hide();
     },
     getGenres() {
-      this.serviceFilmes = new FilmesApiService(this);
-
       this.serviceFilmes
         .getGenres()
         .then(res => {
@@ -190,6 +190,14 @@ export default {
   },
   created: function(){
       this.getGenres();
+
+      if (this.id) {
+        this.serviceFilmes
+          .getMovieById(this.id)
+          .then(res => {
+            this.model = res;
+          });
+      }
   }
 }
 </script>

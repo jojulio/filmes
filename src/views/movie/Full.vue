@@ -1,6 +1,9 @@
 <template>
 	<my-card class="mt-4" :col="12">
 		<div class="row movie-header">
+			<div class="col-12">
+				<button type="button" class="btn btn-outline-primary float-right" @click="editMovie">Editar</button>
+			</div>
 			<div class="col-2"></div>
 			<div class="col-2">
 				<div class="poster">
@@ -38,6 +41,7 @@ export default {
 		return {
 			id: this.$route.params.id,
 			utilsService : new UtilsService(),
+			serviceFilmes: new FilmesApiService(this),
 			model: {
 				tmdb_id: '',
 				imdb_id : '', 
@@ -53,12 +57,10 @@ export default {
 		}
 	},
 	created() {
-		this.serviceFilmes = new FilmesApiService(this);
 		this.serviceFilmes
 			.getMovieById(this.id)
 			.then(res => {
 				this.model = res;
-				console.log(this.model)
 			});
 	},
 	computed: {
@@ -71,7 +73,12 @@ export default {
 		formatGenres() {
 			return this.utilsService.formatGenres(this.model.genres);
 		},
-	}
+	},
+	methods: {
+		editMovie() {
+			this.$router.push('/movies/update/' + this.id);
+		}
+	},
 }
 </script>
 
