@@ -58,7 +58,7 @@
             </div>
         </div>
       </div>
-      <button type="submit" class="btn btn-primary">Salvar</button>
+      <button type="submit" class="btn btn-primary">{{ button }}</button>
     </form>
   </my-card>
 </template>
@@ -79,7 +79,10 @@ export default {
     return {
       id: this.$route.params.id,
       serviceFilmes: new FilmesApiService(this),
+      serviceTmdb: new TmdbApiService(this),
+      button: 'Salvar',
       model: {
+        id: '',
         tmdb_id: '',
         imdb_id : '', 
         title: '', 
@@ -106,7 +109,6 @@ export default {
         opacity: 1,
       });
 
-      this.serviceTmdb = new TmdbApiService(this);
       await this.serviceTmdb
         .getFilmByImdbCode(this.model.imdb_id)
         .then(res => {
@@ -178,12 +180,26 @@ export default {
       this.serviceFilmes
         .saveMovie(this.model)
         .then(res => {
-          console.log(res)
+          if(res.status) {
+            this.$notify({
+              type: 'success',
+              title: 'Informação',
+              text: 'Salvo com sucesso'
+            });
+
+            this.$router.push('/movies/' + parseInt(res.movie_id));
+          } else {
+            this.$notify({
+              type: 'warn',
+              title: 'Informação',
+              text: 'Não foi possível ' + this.button.toLowerCase()
+            });
+          }
         }, () => {
             this.$notify({
               type: 'warn',
               title: 'Informação',
-              text: 'Não foi possível salvar'
+              text: 'Não foi possível ' + this.button.toLowerCase()
             });
         });
     }
@@ -192,6 +208,7 @@ export default {
       this.getGenres();
 
       if (this.id) {
+        this.button = 'Atualizar';
         this.serviceFilmes
           .getMovieById(this.id)
           .then(res => {

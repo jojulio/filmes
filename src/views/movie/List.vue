@@ -1,9 +1,14 @@
 <template>
 	<my-card class="mt-4" :col="12">
+		<div class="row">
+			<div class="col-12">
+				<router-link class="btn btn-outline-primary float-right" :to="{ name: 'newMovie' }">Novo</router-link>
+			</div>
+		</div>
 		<h5 class="card-title">Filmes</h5>
 
 		<div class="row">
-			<my-card class="movie" :col="2" v-for="movie in movies" :key="movie.id" :img="movie.poster_path" @click.native="openMovie(movie.id)">
+			<my-card class="movie mb-4" :col="2" v-for="movie in movies" :key="movie.id" :img="movie.poster_path" @click.native="openMovie(movie.id)">
 				<h5 class="card-title title">{{ movie.title + getYearRelease(movie.release_date)}}</h5>
 				<p class="card-text overview">{{ overviewShort(movie.overview) }}</p>
 				<p class="card-text genres">{{ formatGenres(movie.genres) }}</p>
