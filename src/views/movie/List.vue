@@ -14,6 +14,16 @@
 				<p class="card-text genres">{{ formatGenres(movie.genres) }}</p>
 			</my-card>
 		</div>
+
+		<div class="pagination">
+			<button class="btn btn-default" @click="loadMovies(pagination.prev_page_url)" :disabled="!pagination.prev_page_url">
+				Anterior
+			</button>
+			<span>Página {{ pagination.current_page }} de {{pagination.last_page}}</span>
+			<button class="btn btn-default" @click="loadMovies(pagination.next_page_url)" :disabled="!pagination.next_page_url">
+				Próxima
+			</button>
+		</div>
 	</my-card>
 </template>
 
@@ -30,15 +40,12 @@ export default {
 		return {
 			movies: [],
 			utilsService: new UtilsService(),
-			serviceFilmes: new FilmesApiService(this)
+			serviceFilmes: new FilmesApiService(this),
+            pagination: {}
 		}
 	},
 	created() {
-		this.serviceFilmes
-			.getMovies()
-			.then(res => {
-				this.movies = res.movies;
-			});
+		this.loadMovies();
 	},
 	methods: {
 		overviewShort(overview) {
@@ -52,6 +59,28 @@ export default {
 		},
 		openMovie(id) {
 			this.$router.push('/movies/' + id);
+		},
+		loadMovies(next) {
+			let nextPage = '';
+			if (next) {
+				nextPage = (next.split('?')[1]);
+			}
+			this.serviceFilmes
+				.getMovies(nextPage)
+				.then(res => {
+					this.makePagination(res.movies.data);
+					this.movies = res.movies.data.data;
+				});
+		},
+		makePagination: function(data){
+			let pagination = {
+				current_page: data.current_page,
+				last_page: data.last_page,
+				next_page_url: data.next_page_url,
+				prev_page_url: data.prev_page_url
+			}
+
+			this.pagination = pagination;
 		}
 	},
 }

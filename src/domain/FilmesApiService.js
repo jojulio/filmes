@@ -34,8 +34,8 @@ export default class FilmesApiService {
 		}
 	}
 
-	getMovies() {
-		return this.http.get(`${this.link}/get/movies?apiKey=${this.key}`)
+	getMovies(next) {
+		return this.http.get(`${this.link}/get/movies?${next}&apiKey=${this.key}`)
 			.then(res => res.json())
 			.then (null, err => {
 				console.log(err);
