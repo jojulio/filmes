@@ -36,8 +36,7 @@ export default class FilmesApiService {
 
 	getMovies(next) {
 		return this.http.get(`${this.link}/get/movies?${next}&apiKey=${this.key}`)
-			.then(res => res.json())
-			.then (null, err => {
+			.then(res => res.json(), err => {
 				console.log(err);
 				throw new Error('Não foi possível carregar');
 			});
@@ -45,8 +44,15 @@ export default class FilmesApiService {
 
 	getMovieById(id) {
 		return this.http.get(`${this.link}/get/movies/${id}?apiKey=${this.key}`)
-			.then(res => res.json())
-			.then (null, err => {
+			.then(res => res.json(), err => {
+				console.log(err);
+				throw new Error('Não foi possível carregar');
+			});
+	}
+
+	getMovieByGenre(next, genreId) {
+		return this.http.get(`${this.link}/get/movies/genre/${genreId}?${next}&apiKey=${this.key}`)
+			.then(res => res.json(), err => {
 				console.log(err);
 				throw new Error('Não foi possível carregar');
 			});
