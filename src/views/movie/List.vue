@@ -9,7 +9,8 @@
 			</div>
 			<div class="col-12">
 				<ul>
-					<li v-for="genre in genres" @click="movieByGenre(genre.id)" :key="genre.id">{{ genre.name }}</li>
+					<li :active="genreId === 0" @click="movieByGenre(0)">Todos</li>
+					<li :active="genreId === genre.id" v-for="genre in genres" @click="movieByGenre(genre.id)" :key="genre.id">{{ genre.name }}</li>
 				</ul>
 			</div>
 		</div>
@@ -20,6 +21,13 @@
 				<p class="card-text overview">{{ overviewShort(movie.overview) }}</p>
 				<p class="card-text genres">{{ formatGenres(movie.genres) }}</p>
 			</my-card>
+
+		</div>
+
+		<div class="row">
+			<div class="col-12">
+				<div v-if="errorMessage" class="alert alert-warning" role="alert"> {{ errorMessage }} </div>
+			</div>
 		</div>
 
 		<div class="pagination">
@@ -49,12 +57,15 @@ export default {
 			utilsService: new UtilsService(),
 			serviceFilmes: new FilmesApiService(this),
 			pagination: {},
-			genreId: this.$route.params.id,
-			genres: []
+			genreId: 0,
+			genres: [],
+			errorMessage: '',
+			loader: '',
 		}
 	},
 	created() {
 		this.loadGenres();
+
 		if (this.genreId) {
 			this.loadMoviesByGenre();
 		} else {
@@ -75,12 +86,10 @@ export default {
 			this.$router.push('/movies/' + id);
 		},
 		loadMovies(next) {
-			let nextPage = '';
-			if (next) {
-				nextPage = (next.split('?')[1]);
-			}
+			this.getLoader();
+			let nextPage = next ? next.split('?')[1] : '';
 
-			if (this.genreId) {
+			if (this.genreId && this.genreId !== 0) {
 				this.loadMoviesByGenre(nextPage);
 				return;
 			}
@@ -88,8 +97,13 @@ export default {
 			this.serviceFilmes
 				.getMovies(nextPage)
 				.then(res => {
+					this.errorMessage = res.movies.data.total === 0 ? "Nenhum filme encontrado" : "";
 					this.makePagination(res.movies.data);
 					this.movies = res.movies.data.data;
+					this.loader.hide();
+				}, () => {
+					this.errorMessage = "Não foi possível carregar."; 
+					this.loader.hide();
 				});
 		},
 		makePagination: function(data){
@@ -113,19 +127,35 @@ export default {
 		},
 		movieByGenre(genreId) {
 			this.genreId = genreId;
-			this.loadMoviesByGenre();
-		},
-		loadMoviesByGenre(next) {
-			let nextPage = '';
-			if (next) {
-				nextPage = next;
+			if (genreId === 0) {
+				this.loadMovies();
+			} else {
+				this.loadMoviesByGenre();
 			}
+		},
+		async loadMoviesByGenre(next) {
+			this.getLoader();
+			let nextPage = next ? next : '';
+
 			this.serviceFilmes
 				.getMovieByGenre(nextPage, this.genreId)
 				.then(res => {
-					//this.makePagination(res.movies.data);
+					this.errorMessage = res.movies.data.total === 0 ? "Nenhum filme encontrado" : "";
+					this.makePagination(res.movies.data);
 					this.movies = res.movies.data.data;
+					this.loader.hide();
+				}, () => {
+					this.errorMessage = "Não foi possível carregar."; 
+					this.loader.hide();
 				});
+		},
+		getLoader() {
+			this.loader = this.$loading.show({
+				container: this.$refs.formContainer,
+				canCancel: true,
+				onCancel: this.onCancel,
+				opacity: 1,
+			});
 		}
 	},
 }
@@ -172,6 +202,11 @@ export default {
 		padding: 0;
 		display: flex;
 		flex-wrap: wrap;
+	}
+
+	li[active] {
+		background: #41b883;
+		color: #fff;
 	}
 
 </style>
