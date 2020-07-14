@@ -85,26 +85,25 @@ export default {
 		openMovie(id) {
 			this.$router.push('/movies/' + id);
 		},
-		loadMovies(next) {
-			this.getLoader();
+		async loadMovies(next) {
 			let nextPage = next ? next.split('?')[1] : '';
 
 			if (this.genreId && this.genreId !== 0) {
 				this.loadMoviesByGenre(nextPage);
 				return;
 			}
+			
+			this.getLoader();
 
-			this.serviceFilmes
+			await this.serviceFilmes
 				.getMovies(nextPage)
 				.then(res => {
 					this.errorMessage = res.movies.data.total === 0 ? "Nenhum filme encontrado" : "";
 					this.makePagination(res.movies.data);
 					this.movies = res.movies.data.data;
-					this.loader.hide();
-				}, () => {
-					this.errorMessage = "Não foi possível carregar."; 
-					this.loader.hide();
-				});
+				}, () => this.errorMessage = "Não foi possível carregar.");
+
+			this.loader.hide();
 		},
 		makePagination: function(data){
 			let pagination = {
@@ -137,17 +136,15 @@ export default {
 			this.getLoader();
 			let nextPage = next ? next : '';
 
-			this.serviceFilmes
+			await this.serviceFilmes
 				.getMovieByGenre(nextPage, this.genreId)
 				.then(res => {
 					this.errorMessage = res.movies.data.total === 0 ? "Nenhum filme encontrado" : "";
 					this.makePagination(res.movies.data);
 					this.movies = res.movies.data.data;
-					this.loader.hide();
-				}, () => {
-					this.errorMessage = "Não foi possível carregar."; 
-					this.loader.hide();
-				});
+				}, () => this.errorMessage = "Não foi possível carregar.");
+
+			this.loader.hide();
 		},
 		getLoader() {
 			this.loader = this.$loading.show({
