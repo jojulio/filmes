@@ -16,6 +16,9 @@
 			<li class="nav-item">
 				<router-link class="nav-link" :to="{ name: 'listMovie' }">Filmes</router-link>
 			</li>
+			<li class="nav-item">
+				<router-link class="nav-link" :to="{ name: 'newPerson' }">Pessoa</router-link>
+			</li>
 		</ul>
 		<div class="form-inline my-2 my-lg-0">
 			<input class="form-control mr-sm-2" type="search" placeholder="Digite" aria-label="Search">

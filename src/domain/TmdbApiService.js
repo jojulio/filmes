@@ -6,7 +6,7 @@ export default class TmdbApiService {
 		this.key = '99036d33394962b8dcb1c61dde34edf3';
 	}
 
-	getFilmByImdbCode(code) {
+	getByImdbCode(code) {
 		return this._resource.$http.get(`${this.link}/find/${code}?api_key=${this.key}&language=pt-BR&external_source=imdb_id`)
 			.then(res => res.json())
 			.then (null, err => {

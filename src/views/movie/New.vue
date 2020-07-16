@@ -110,7 +110,7 @@ export default {
       });
 
       await this.serviceTmdb
-        .getFilmByImdbCode(this.model.imdb_id)
+        .getByImdbCode(this.model.imdb_id)
         .then(res => {
           if (res.movie_results.length > 0) {
             const movie = res.movie_results[0];
@@ -139,8 +139,7 @@ export default {
             
             this.loader.hide();
           }
-        })
-        .then(null, () => {
+        }, () => {
             this.loader.hide();
         });
         

@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import NewMovie from '@/views/movie/New';
 import ListMovie from '@/views/movie/List';
 import FullMovie from '@/views/movie/Full';
+import newPerson from '@/views/person/New';
 import Home from '@/views/home/Home';
 
 Vue.use(Router);
@@ -15,6 +16,8 @@ export default new Router({
 		{ path: '/movies/update/:id', name: 'newMovie', component: NewMovie },
 		{ path: '/movies/:id', name: 'FullMovie', component: FullMovie },
 		{ path: '/', name: 'home', component: Home },
+
+		{ path: '/person/new', name: 'newPerson', component: newPerson },
 	]
 });
  
