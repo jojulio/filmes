@@ -1,46 +1,21 @@
 <template>
 	<my-card class="mt-4" :col="12">
-    <h5 class="card-title">Cadastro de filmes</h5>
+    <h5 class="card-title">{{ cardTitle }}</h5>
     
     <form ref="formContainer" @submit.prevent="save()">
       <div class="row">
         <div class="col-9">
           <div class="form-row">
 
-            <div class="form-group col-md-2">
-              <label for="imdb_id">ID IMDB</label>
-              <input type="text" class="form-control" v-on:change="loadValuesFromTmdb" v-model="model.imdb_id" >
-            </div>
+            <my-input-group classGroup="form-group col-md-2" id="title" label="ID IMDB" :data="model.imdb_id" :callback="loadValuesFromTmdb" />
+            <my-input-group classGroup="form-group col-md-5" id="title" label="Título" :data="model.title" />
+            <my-input-group classGroup="form-group col-md-5" id="originalTitle" label="Título original" :data="model.original_title" />
+            <my-input-group classGroup="form-group col-md-4" id="originalLanguage" label="Linguagem" :data="model.original_language" />
+            <my-input-group classGroup="form-group col-md-4" id="releaseDate" label="Data de estreia" :data="model.release_date" />
+            <my-input-group classGroup="form-group col-md-4" id="runtime" label="Duração" :data="model.runtime" type="number" />
+            <my-input-group classGroup="form-group col-md-12" id="overview" label="Sinopse" :data="model.overview" type="textarea" rows=8 />
 
-            <div class="form-group col-md-5">
-              <label for="title">Título</label>
-              <input type="text" class="form-control" v-model="model.title">
-            </div>
 
-            <div class="form-group col-md-5">
-              <label for="title">Título original</label>
-              <input type="text" class="form-control" v-model="model.original_title"> 
-            </div>
-
-            <div class="form-group col-md-4">
-              <label for="original_language">Linguagem</label>
-              <input type="text" class="form-control" v-model="model.original_language">
-            </div>
-
-            <div class="form-group col-md-4">
-              <label for="release_date">Data de estreia</label>
-              <input type="date" class="form-control" v-model="model.release_date">
-            </div>
-
-            <div class="form-group col-md-4">
-              <label for="runtime">Duração</label>
-              <input type="number" class="form-control" v-model="model.runtime">
-            </div>
-
-            <div class="form-group col-md-12">
-              <label for="overview">Sinopse</label>
-              <textarea class="form-control" rows="8" v-model="model.overview"></textarea>
-            </div>
             <div class="form-group col-md-12">
               <label for="genres">Gêneros</label>
               <multiselect v-model="model.genres" :options="options" :multiple="true" :close-on-select="false" :clear-on-select="false" :preserve-search="true" placeholder="Selecione" label="name" track-by="name">
@@ -49,10 +24,7 @@
           </div>
         </div>
         <div class="col-3">
-            <div class="form-group col-md-12">
-              <label for="poster_path">Poster</label>
-              <input type="text" class="form-control" v-model="model.poster_path">
-            </div>
+            <my-input-group classGroup="form-group col-md-12" id="posterPath" label="Poster" :data="model.poster_path" />
             <div class="form-group col-md-12 img-poster">
               <img :src="model.poster_path">
             </div>
@@ -66,6 +38,7 @@
 <script>
 
 import Card from '../../components/shared/Card';
+import InputGroup from '../../components/shared/InputGroup';
 import TmdbApiService from '../../domain/TmdbApiService';
 import FilmesApiService from '../../domain/FilmesApiService';
 import Multiselect from 'vue-multiselect';
@@ -73,7 +46,8 @@ import Multiselect from 'vue-multiselect';
 export default {
   components: {
     'my-card' : Card,
-    'multiselect': Multiselect
+    'multiselect': Multiselect,
+    'my-input-group': InputGroup,
   },
   data() {
     return {
@@ -97,11 +71,13 @@ export default {
       fullPage: true,
       loader: '',
       options: [],
-      genresTmdb: []
+      genresTmdb: [],
+      cardTitle: 'Cadastro de filmes',
     }
   },
 	methods: {
-		async loadValuesFromTmdb() {
+		async loadValuesFromTmdb(imdb_id) {
+      this.model.imdb_id = imdb_id;
       this.loader = this.$loading.show({
         container: this.$refs.formContainer,
         canCancel: true,
