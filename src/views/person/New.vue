@@ -15,7 +15,7 @@
 </template>
 
 <script>
-import Card from '../../components/shared/Card';
+import Card from '../../components/shared/card/Card';
 import TmdbApiService from '../../domain/TmdbApiService';
 
 export default {

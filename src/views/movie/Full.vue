@@ -29,7 +29,7 @@
 
 <script>
 
-import Card from '../../components/shared/Card';
+import Card from '../../components/shared/card/Card';
 import FilmesApiService from '../../domain/FilmesApiService';
 import UtilsService from '../../domain/UtilsService';
 

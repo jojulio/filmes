@@ -1,6 +1,6 @@
 <template>
 	<my-card class="mt-4" :col="12">
-    <h5 class="card-title">{{ cardTitle }}</h5>
+    <my-card-title title="Cadastro de filmes" />
     
     <form ref="formContainer" @submit.prevent="save()">
       <div class="row">
@@ -14,7 +14,6 @@
             <my-input-group classGroup="form-group col-md-4" id="releaseDate" label="Data de estreia" :data="model.release_date" />
             <my-input-group classGroup="form-group col-md-4" id="runtime" label="Duração" :data="model.runtime" type="number" />
             <my-input-group classGroup="form-group col-md-12" id="overview" label="Sinopse" :data="model.overview" type="textarea" rows=8 />
-
 
             <div class="form-group col-md-12">
               <label for="genres">Gêneros</label>
@@ -37,7 +36,8 @@
 
 <script>
 
-import Card from '../../components/shared/Card';
+import Card from '../../components/shared/card/Card';
+import CardTitle from '../../components/shared/card/CardTitle';
 import InputGroup from '../../components/shared/InputGroup';
 import TmdbApiService from '../../domain/TmdbApiService';
 import FilmesApiService from '../../domain/FilmesApiService';
@@ -48,6 +48,7 @@ export default {
     'my-card' : Card,
     'multiselect': Multiselect,
     'my-input-group': InputGroup,
+    'my-card-title': CardTitle,
   },
   data() {
     return {
@@ -55,24 +56,11 @@ export default {
       serviceFilmes: new FilmesApiService(this),
       serviceTmdb: new TmdbApiService(this),
       button: 'Salvar',
-      model: {
-        id: '',
-        tmdb_id: '',
-        imdb_id : '', 
-        title: '', 
-        original_title: '', 
-        original_language: '',
-        release_date: '',
-        overview: '',
-        poster_path: '',
-        runtime: '',
-        genres: []
-      },
+      model: [],
       fullPage: true,
       loader: '',
       options: [],
       genresTmdb: [],
-      cardTitle: 'Cadastro de filmes',
     }
   },
 	methods: {
@@ -89,16 +77,8 @@ export default {
         .getByImdbCode(this.model.imdb_id)
         .then(res => {
           if (res.movie_results.length > 0) {
-            const movie = res.movie_results[0];
-            
-            this.model.tmdb_id = movie.id;
-            this.model.title = movie.title;
-            this.model.original_title = movie.original_title;
-            this.model.original_language = movie.original_language;
-            this.model.release_date = movie.release_date;
-            this.model.overview = movie.overview;
-            this.model.poster_path = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+movie.poster_path;
-            
+            this.model = res.movie_results[0];
+            this.model.poster_path = 'https://image.tmdb.org/t/p/w600_and_h900_bestv2'+this.model.poster_path;
             this.getFullInfoFromTmdb();
           } else {
             for (let prop in this.model) {

@@ -23,7 +23,7 @@ export default {
 		model: String,
 		callback: Function,
 		data: String,
-		rows: Number, 
+		rows: String, 
 	},
 	data() {
 		return {
